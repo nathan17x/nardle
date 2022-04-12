@@ -9,8 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let word = "crate";
     let guessedWordCount = 0;
+    const solutionOccArr = calcOccArr(word);
+    console.log(solutionOccArr);
+    var currentOccArr;
 
-
+    function calcOccArr(word){
+        let rtn = [];
+        for(let i = 0; i<26; i++){
+            rtn[i] = 0;
+        }
+        for(let i = 0; i < 5; i++){
+            rtn[word.charCodeAt(i)-97]++;
+        }
+        return rtn;
+    }
 
     function getCurrentWordArr(){
         const numberOfGuessedWords = guessedWords.length;
@@ -27,17 +39,33 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function getTileColor(letter,index,currentWord){
+    function getLetterID(letter){
+        return letter.charCodeAt(0) - 97;
+    }
+
+    function getTileColor(letter,index){
+        const id = getLetterID(letter);
         const isCorrectLetter = word.includes(letter);
-        if(!isCorrectLetter){
-            return "rgb(58,58,60)";
-        }
         const isCorrectPosition = (letter === word.charAt(index));
         if(isCorrectPosition){
+            currentOccArr[id]--;
             return "rgb(83,141,78)";
         }
-        return "rgb(181,159,59)";
+        if(currentOccArr[id]>0 && currentOccArr[id] <= solutionOccArr[id]){
+           currentOccArr[id]--;
+           return "rgb(181,159,59)";
+        }
+        return "rgb(58,58,60)";
     }
+
+    function sleep(milliseconds) {
+        const date = Date.now();
+        let currentDate = null;
+        do {
+          currentDate = Date.now();
+        } while (currentDate - date < milliseconds);
+        return 0;
+      }
 
     function handleSubmitWord(){
         const currentWordArr = getCurrentWordArr();
@@ -46,34 +74,37 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
         const currentWord = currentWordArr.join('');
+        currentOccArr = calcOccArr(currentWord);
+        console.log(currentOccArr);
         const interval = 200;
         const firstLetterId = guessedWordCount * 5 + 1;
         currentWordArr.forEach((letter,index)=>{
             setTimeout(()=>{
-                const tileColor = getTileColor(letter,index,currentWord);
+                const tileColor = getTileColor(letter,index);
                 const letterId = firstLetterId + index;
                 const letterEl = document.getElementById(letterId);
                 letterEl.classList.add("animate__flipInX");
                 letterEl.style = `background-color:${tileColor};border-color:${tileColor};`
-
             }, interval * index);
         });
-
         guessedWordCount++;
 
-        if(currentWord === word){
-            window.alert('woot, woot');
-            return;
-        }
-        if(guessedWords.length === 6){
-            window.alert('Darn! the word was "WENDY"!');
-            window.alert('WENDEEZ NUTS are in ya mouth!!! jk it was ' + word);
-            return;
-        }
-        else{
-            guessedWords.push([]);
-            return;
-        }
+        setTimeout(()=>{
+            if (currentWord === word) {
+                window.alert('woot, woot');
+                return;
+            }
+            if (guessedWords.length === 6) {
+                window.alert('Darn! the word was "WENDY"!');
+                window.alert('WENDEEZ NUTS are in ya mouth!!! jk it was ' + word);
+                return;
+            }
+            else {
+                guessedWords.push([]);
+                return;
+            }    
+        },1000);
+        
     }
 
     function createSquares(){
