@@ -58,14 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return "rgb(58,58,60)";
     }
 
-    function sleep(milliseconds) {
-        const date = Date.now();
-        let currentDate = null;
-        do {
-          currentDate = Date.now();
-        } while (currentDate - date < milliseconds);
-        return 0;
-      }
 
     function handleSubmitWord(){
         const currentWordArr = getCurrentWordArr();
