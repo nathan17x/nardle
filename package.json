@@ -1,0 +1,14 @@
+{
+  "name": "my-wordle",
+  "version": "1.0.0",
+  "description": "Wordle racer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nathan Mahoney",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.6.10"
+  }
+}
